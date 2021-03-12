@@ -7,13 +7,14 @@
         <p>Data 1 = <span id="span_data1">#</span></p>
         <p>Data 2 = <span id="span_data2">#</span></p>
         <script>
-            var ws = new WebSocket("ws://127.0.0.1:5678/"),
-                messages = document.createElement('ul');
+            var ws = new WebSocket("ws://127.0.0.1:5678/");
             ws.onmessage = function (event) {
                 var span_data1 = document.getElementById("span_data1");
                 var span_data2 = document.getElementById("span_data2");
-                span_data1.innerHTML = event.data;
-                span_data2.innerHTML = event.data;
+                data = JSON.parse(event.data);
+                span_data1.innerHTML = data.data1;
+                span_data2.innerHTML = data.data2;
+                console.log(data)
             };
         </script>
     </body>
