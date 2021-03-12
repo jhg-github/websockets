@@ -1,0 +1,55 @@
+<!-- https://github.com/e-tinkers/d3-dashboard-gauge -->
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>WebSocket with gauge</title>
+        <link rel="stylesheet" href="dist/style.min.css">
+    </head>
+    <body>
+        <p>Data 1 = <span id="span_data1">#</span></p>
+        <p>Data 2 = <span id="span_data2">#</span></p>
+        <div class="gauge-container">
+            <div id="gauge1"></div>
+        </div>      
+        <div class="gauge-container">
+            <div id="gauge2"></div>
+        </div>
+
+        <script src="https://unpkg.com/d3@5.7.0/dist/d3.min.js"></script>
+        <script src="dist/gauge.js"></script>
+        <script>
+            config = {
+                size : 200,
+                margin : 10,
+                minValue : 0,
+                maxValue : 10,
+                majorTicks : 5,
+                lowThreshhold : 3,
+                highThreshhold : 7,
+                scale: 'linear',
+                lowThreshholdColor : '#009900',
+                defaultColor : '#ffe500',
+                highThreshholdColor : '#cc0000',
+                transitionMs : 1000,
+                displayUnit: 'Value'
+                };
+            const myGauge = new Gauge();
+            const myGauge1 = new Gauge(config);
+            const myGauge2 = new Gauge(config);
+            myGauge1.render("#gauge1");
+            myGauge2.render("#gauge2");
+
+            var ws = new WebSocket("ws://127.0.0.1:5678/");
+            ws.onmessage = function (event) {
+                var span_data1 = document.getElementById("span_data1");
+                var span_data2 = document.getElementById("span_data2");
+                data = JSON.parse(event.data);
+                span_data1.innerHTML = data.data1;
+                span_data2.innerHTML = data.data2;
+                myGauge1.update(data.data1);
+                myGauge2.update(data.data2);
+                console.log(data)
+            };
+        </script>
+    </body>
+</html>
